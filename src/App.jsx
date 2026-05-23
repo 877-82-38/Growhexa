@@ -187,7 +187,7 @@ const Navbar = ({ dark, toggleDark }) => {
             <polygon points="20,3 37,13 37,27 20,37 3,27 3,13" fill="url(#ng)" opacity="0.9"/>
             <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="11" fontWeight="800" fontFamily="sans-serif">GX</text>
           </svg>
-          <span>Growexa</span>
+          <span>GrowHexa</span>
         </button>
 
         <div className="nav-links-desktop">
@@ -244,7 +244,7 @@ const Hero = () => {
     { to: 10,  suffix: "+", label: "Business Websites" },
     { to: 50,  suffix: "+", label: "Projects Completed" },
     { to: 100, suffix: "%", label: "Client Satisfaction" },
-    { to: 999, suffix: "+", label: "Unlimited Revisions" },
+    { to: 2, suffix: "+", label: "Months Unlimited Revisions" },
   ];
   return (
     <section id="home" className="hero">
@@ -285,18 +285,18 @@ const GrowthGraph = () => {
   const animRef = useRef(null);
 
   const data = [
-    { month: "Jan", traffic: 20, leads: 8,  revenue: 15 },
-    { month: "Feb", traffic: 32, leads: 14, revenue: 22 },
-    { month: "Mar", traffic: 28, leads: 18, revenue: 30 },
-    { month: "Apr", traffic: 45, leads: 25, revenue: 42 },
-    { month: "May", traffic: 52, leads: 32, revenue: 55 },
-    { month: "Jun", traffic: 48, leads: 38, revenue: 60 },
-    { month: "Jul", traffic: 68, leads: 48, revenue: 72 },
-    { month: "Aug", traffic: 75, leads: 55, revenue: 80 },
-    { month: "Sep", traffic: 70, leads: 60, revenue: 85 },
-    { month: "Oct", traffic: 88, leads: 70, revenue: 92 },
-    { month: "Nov", traffic: 92, leads: 78, revenue: 96 },
-    { month: "Dec", traffic: 100, leads: 88, revenue: 100 },
+    { month: "Jan", traffic: 20, leads: 8,  revenue: 0 },
+    { month: "Feb", traffic: 32, leads: 14, revenue: 2 },
+    { month: "Mar", traffic: 28, leads: 18, revenue: 3 },
+    { month: "Apr", traffic: 45, leads: 25, revenue: 8 },
+    { month: "May", traffic: 52, leads: 32, revenue: 8 },
+    { month: "Jun", traffic: 48, leads: 38, revenue: 10 },
+    { month: "Jul", traffic: 68, leads: 48, revenue: 11 },
+    { month: "Aug", traffic: 75, leads: 55, revenue: 11 },
+    { month: "Sep", traffic: 70, leads: 60, revenue: 13 },
+    { month: "Oct", traffic: 88, leads: 64, revenue: 15},
+    { month: "Nov", traffic: 92, leads: 66, revenue: 17 },
+    { month: "Dec", traffic: 100, leads: 67, revenue: 17 },
   ];
 
   const drawChart = useCallback((progress) => {
@@ -458,7 +458,7 @@ const GrowthGraph = () => {
         <Reveal className="section-header">
           <div className="section-label">Growth Results</div>
           <h2 className="section-title">Real Growth, <span className="gradient-text">Real Numbers</span></h2>
-          <p className="section-sub">See how our clients grow after working with Growexa Digital — across traffic, leads, and revenue over 12 months.</p>
+          <p className="section-sub">See how our clients grow after working with GrowHexa Digital — across traffic, leads, and revenue over 12 months.</p>
         </Reveal>
 
         <div className="growth-metrics">
@@ -523,7 +523,7 @@ const About = () => {
           <Reveal className="about-left">
             <div className="section-label">About Growexa</div>
             <h2 className="section-title">We Are the Growth Partners You've Been Looking For</h2>
-            <p className="about-text">Growexa Digital was founded with a singular vision: to help businesses thrive in the digital age. We combine cutting-edge technology with strategic thinking to deliver websites and digital solutions that don't just look great — they perform.</p>
+            <p className="about-text">Growhexa Digital was founded with a singular vision: to help businesses thrive in the digital age. We combine cutting-edge technology with strategic thinking to deliver websites and digital solutions that don't just look great — they perform.</p>
             <p className="about-text">From startups to established enterprises, we've partnered with ambitious teams who refuse to settle for mediocre digital presence.</p>
             <div className="about-mission">
               <div className="mission-card">
@@ -647,12 +647,12 @@ const Work = () => {
       link: "https://precision-sports-center.vercel.app",
     },
     {
-      title: "Atlas Architecture",
-      cat: "Branding",
-      tag: "Studio Website",
+      title: "Disaster management Authority Portal",
+      cat: "Web Dev",
+      tag: "Disaster Management Website",
       color: "#8B5CF6",
-      image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80",
-      link: "https://growexa.digital",
+      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png~",
+      link: "https://dms-wine-gamma.vercel.app/",
     },
    
   ];
