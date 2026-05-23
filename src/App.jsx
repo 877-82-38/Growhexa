@@ -651,7 +651,7 @@ const Work = () => {
       cat: "Web Dev",
       tag: "Disaster Management Website",
       color: "#8B5CF6",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png~",
+      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png",
       link: "https://dms-wine-gamma.vercel.app/",
     },
    
