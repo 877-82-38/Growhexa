@@ -793,7 +793,7 @@ const Contact = () => {
             </div>
             <div className="social-links">
               {["instagram","twitter","linkedin"].map(s => (
-                <a key={s} href="#" className="social-link" aria-label={s}><Icon name={s} size={18}/></a>
+                <a key={s} href={`https://www.${s}.com/growhexa_digital`} className="social-link" aria-label={s}><Icon name={s} size={18}/></a>
               ))}
             </div>
             <div className="contact-banner">
