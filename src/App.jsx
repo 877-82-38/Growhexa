@@ -780,7 +780,8 @@ const Contact = () => {
             <h3 className="contact-info-title">Get in Touch</h3>
             <div className="contact-item">
               <div className="contact-icon"><Icon name="mail" size={20}/></div>
-              <div><strong>Email</strong><p>contact@growhexa.online</p></div>
+              <div><strong>Email</strong><p>studiogrowix@gmail.com
+</p></div>
             </div>
             <div className="contact-item">
               <div className="contact-icon"><Icon name="phone" size={20}/></div>
