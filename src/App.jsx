@@ -614,6 +614,14 @@ const Work = () => {
       image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303807/Screenshot_2026-05-05_173129_r2xmzj.png",
       link: "https://www.mmtigerssportsacademy.com/",
     },
+     {
+      title: "V-Karathe Academy",
+      cat: "branding",
+      tag: "Academy Website",
+      color: "#EF4444",
+      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779266611/Screenshot_2026-05-19_081023_rxmurd.png",
+      link: "https://v-karathe-academy.vercel.app",
+    },
     {
       title: "V-Fit Studio",
       cat: "Web Dev",
@@ -630,14 +638,7 @@ const Work = () => {
       image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779012398/Screenshot_2026-05-17_153253_lyqb5y.png",
       link: "https://gencart.vercel.app",
     },
-    {
-      title: "Siva Electricals Business Website",
-      cat: "Web Dev",
-      tag: "Electrical SHOP Website",
-      color: "#EF4444",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303829/Screenshot_2026-05-09_104423_isvbvw.png",
-      link: "https://sivaelectricals.vercel.app/",
-    },
+   
     {
       title: "Precision Sports Center Website",
       cat: "Marketing",
