@@ -780,11 +780,11 @@ const Contact = () => {
             <h3 className="contact-info-title">Get in Touch</h3>
             <div className="contact-item">
               <div className="contact-icon"><Icon name="mail" size={20}/></div>
-              <div><strong>Email</strong><p>hello@growexa.digital</p></div>
+              <div><strong>Email</strong><p>contact@growhexa.online</p></div>
             </div>
             <div className="contact-item">
               <div className="contact-icon"><Icon name="phone" size={20}/></div>
-              <div><strong>Phone</strong><p>+91 98765 43210</p></div>
+              <div><strong>Phone</strong><p>+91 8778238701</p></div>
             </div>
             <div className="contact-item">
               <div className="contact-icon"><Icon name="globe" size={20}/></div>
@@ -885,7 +885,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2025 Growexa Digital. All rights reserved.</span>
+        <span>© 2026 GrowHexa Digital. All rights reserved.</span>
         <span>Made with ❤ in Chennai, India</span>
       </div>
     </footer>
