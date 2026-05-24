@@ -1,0 +1,42 @@
+# GrowHexa Digital
+
+> GrowHexa is a premium web development and digital agency based in Chennai, Tamil Nadu, India. We build high-performance websites, UI/UX designs, branding systems, and digital marketing solutions that help businesses grow.
+
+## About
+
+GrowHexa Digital was founded to help businesses thrive in the digital age. We combine cutting-edge technology with strategic thinking to deliver websites and digital solutions that perform. We serve startups, SMBs, and established enterprises across India and globally.
+
+## Services
+
+- **Website Development**: Custom, high-performance websites built with React, Next.js, and modern frameworks
+- **UI/UX Design**: Research-driven, pixel-perfect interfaces that drive conversions
+- **Business Websites**: Professional websites tailored to showcase brands and generate leads
+- **E-Commerce**: Scalable online stores with seamless checkout and admin tools
+- **Landing Pages**: High-converting pages optimized for campaigns and goals
+- **SEO Optimization**: Technical SEO and content strategies to dominate search rankings
+- **Branding Design**: Complete brand identity systems — logo, colors, typography, guidelines
+- **Digital Marketing**: Multi-channel campaigns that drive measurable business growth
+
+## Portfolio Highlights
+
+- MM Tigers Sports Academy — https://www.mmtigerssportsacademy.com/
+- V-Karathe Academy — https://v-karathe-academy.vercel.app
+- BK-Fit Studio — https://vfitstudio.vercel.app
+- GenCart Blog — https://gencart.vercel.app
+- Precision Sports Center — https://precision-sports-center.vercel.app
+- Disaster Management Authority Portal — https://dms-wine-gamma.vercel.app/
+
+## Contact
+
+- Email: studiogrowix@gmail.com
+- Phone: +91 87782 38701
+- Location: Chennai, Tamil Nadu, India
+- Website: https://www.growhexa.online
+
+## Results
+
+- 50+ projects completed
+- 10+ business websites launched
+- 100% client satisfaction
+- Average 3.8× traffic growth for clients
+- Average 320% ROI for clients
