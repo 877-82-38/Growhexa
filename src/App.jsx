@@ -619,11 +619,11 @@ const Work = () => {
       cat: "branding",
       tag: "Academy Website",
       color: "#EF4444",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779266611/Screenshot_2026-05-19_081023_rxmurd.png",
+      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779597847/Screenshot_2026-05-24_101258_kabvjf.png",
       link: "https://v-karathe-academy.vercel.app",
     },
     {
-      title: "V-Fit Studio",
+      title: "BK-Fit Studio",
       cat: "Web Dev",
       tag: "Fitness Studio Website",
       color: "#10B981",
