@@ -158,7 +158,7 @@ const Navbar = () => {
             {l.label}
           </button>
         ))}
-        <button className="mob-cta" onClick={() => go("contact")}>Get Started →</button>
+        <button className="mob-cta" onClick={() => go("contact")}>aGet Started →</button>
       </div>
     </nav>
   );
