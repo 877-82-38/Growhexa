@@ -1,124 +1,83 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import "./App.css";
 
-// ── Icons ────────────────────────────────────────────────────────────────────
-const Icon = ({ name, size = 24 }) => {
-  const icons = {
-    moon: <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />,
-    sun: (<><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></>),
-    menu: (<><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>),
-    x: (<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>),
-    arrowUp: <polyline points="18 15 12 9 6 15" />,
-    arrowRight: <polyline points="9 18 15 12 9 6" />,
-    externalLink: (<><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></>),
-    plus: (<><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>),
-    minus: <line x1="5" y1="12" x2="19" y2="12" />,
-    send: <><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></>,
+// ── SVG Icons ─────────────────────────────────────────────────────────────────
+const Icon = ({ name, size = 24, className = "" }) => {
+  const paths = {
+    code: <><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>,
+    trending: <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>,
+    search: <><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>,
+    palette: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2v-.5c0-.28.22-.5.5-.5h1c3.31 0 6-2.69 6-6 0-5.52-4.03-10-9.5-10z"/>,
+    share: <><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></>,
+    zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>,
+    check: <polyline points="20 6 9 17 4 12"/>,
+    arrowRight: <polyline points="9 18 15 12 9 6"/>,
+    star: <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>,
     mail: <><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></>,
     phone: <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.47 2 2 0 0 1 3.55 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>,
     globe: <><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></>,
-    code: <><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>,
-    layout: <><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></>,
-    shopping: <><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></>,
-    trending: <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>,
-    star: <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>,
-    check: <polyline points="20 6 9 17 4 12" />,
+    menu: <><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></>,
+    x: <><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
+    arrowUp: <polyline points="18 15 12 9 6 15"/>,
+    externalLink: <><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></>,
+    shield: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>,
+    clock: <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>,
+    bar: <><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>,
+    users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>,
     instagram: <><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></>,
     twitter: <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/>,
     linkedin: <><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></>,
-    palette: <><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2v-.5c0-.28.22-.5.5-.5h1c3.31 0 6-2.69 6-6 0-5.52-4.03-10-9.5-10z"/></>,
-    search: <><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>,
-    zap: <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>,
-    target: <><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></>,
-    briefcase: <><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></>,
-    users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></>,
-    activity: <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />,
+    plus: <><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></>,
+    minus: <line x1="5" y1="12" x2="19" y2="12"/>,
+    send: <><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></>,
     award: <><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></>,
-    barChart: <><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></>,
-    trendingUp: <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>,
+    smartphone: <><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></>,
+    target: <><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></>,
+    layout: <><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></>,
   };
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      {icons[name]}
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      {paths[name]}
     </svg>
   );
 };
 
-// ── Splash Screen ────────────────────────────────────────────────────────────
-const SplashScreen = ({ onDone }) => {
-  const [phase, setPhase] = useState("in");
+// ── Scroll Progress ───────────────────────────────────────────────────────────
+const ScrollProgress = () => {
+  const [pct, setPct] = useState(0);
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("hold"), 800);
-    const t2 = setTimeout(() => setPhase("out"), 2200);
-    const t3 = setTimeout(onDone, 3000);
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
-  }, [onDone]);
+    const fn = () => {
+      const el = document.documentElement;
+      setPct((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100);
+    };
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+  return <div className="scroll-bar" style={{ width: `${pct}%` }} />;
+};
+
+// ── Reveal on scroll ──────────────────────────────────────────────────────────
+const Reveal = ({ children, delay = 0, className = "", once = true }) => {
+  const ref = useRef(null);
+  const [vis, setVis] = useState(false);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setVis(true); if (once) obs.disconnect(); }
+    }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [once]);
   return (
-    <div className={`splash ${phase}`}>
-      <div className="splash-bg">
-        <div className="splash-blob splash-blob-1" />
-        <div className="splash-blob splash-blob-2" />
-        <div className="splash-grid" />
-      </div>
-      <div className="splash-content">
-        <div className="splash-logo">
-          <svg viewBox="0 0 60 60" className="splash-icon">
-            <defs>
-              <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#3B82F6"/><stop offset="100%" stopColor="#8B5CF6"/>
-              </linearGradient>
-            </defs>
-            <polygon points="30,5 55,20 55,40 30,55 5,40 5,20" fill="none" stroke="url(#sg)" strokeWidth="2.5"/>
-            <polygon points="30,12 48,22 48,38 30,48 12,38 12,22" fill="url(#sg)" opacity="0.15"/>
-            <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fill="url(#sg)" fontSize="14" fontWeight="800" fontFamily="sans-serif">GX</text>
-          </svg>
-          <span className="splash-wordmark">Growexa</span>
-        </div>
-        <div className="splash-tagline">Digital Excellence</div>
-        <div className="splash-loader">
-          <div className="splash-bar"><div className="splash-bar-fill" /></div>
-        </div>
-      </div>
+    <div ref={ref} className={`reveal ${vis ? "revealed" : ""} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}>
+      {children}
     </div>
   );
 };
 
-// ── Custom Cursor ────────────────────────────────────────────────────────────
-const CustomCursor = () => {
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
-  const pos = useRef({ x: 0, y: 0 });
-  const ring = useRef({ x: 0, y: 0 });
-  const raf = useRef(null);
-  useEffect(() => {
-    const move = (e) => { pos.current = { x: e.clientX, y: e.clientY }; };
-    window.addEventListener("mousemove", move);
-    const loop = () => {
-      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
-      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
-      if (dotRef.current) dotRef.current.style.transform = `translate(${pos.current.x - 4}px,${pos.current.y - 4}px)`;
-      if (ringRef.current) ringRef.current.style.transform = `translate(${ring.current.x - 18}px,${ring.current.y - 18}px)`;
-      raf.current = requestAnimationFrame(loop);
-    };
-    raf.current = requestAnimationFrame(loop);
-    return () => { window.removeEventListener("mousemove", move); cancelAnimationFrame(raf.current); };
-  }, []);
-  return (<><div ref={dotRef} className="cursor-dot" /><div ref={ringRef} className="cursor-ring" /></>);
-};
-
-// ── Scroll Progress ──────────────────────────────────────────────────────────
-const ScrollProgress = () => {
-  const [pct, setPct] = useState(0);
-  useEffect(() => {
-    const fn = () => { const el = document.documentElement; setPct((el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100); };
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-  return <div className="scroll-progress" style={{ width: `${pct}%` }} />;
-};
-
-// ── Animated Counter ─────────────────────────────────────────────────────────
-const Counter = ({ to, suffix = "", duration = 2000 }) => {
+// ── Animated Counter ──────────────────────────────────────────────────────────
+const Counter = ({ to, suffix = "", duration = 1600 }) => {
   const [val, setVal] = useState(0);
   const ref = useRef(null);
   const started = useRef(false);
@@ -126,16 +85,15 @@ const Counter = ({ to, suffix = "", duration = 2000 }) => {
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !started.current) {
         started.current = true;
-        const startTime = performance.now();
-        const animate = (now) => {
-          const elapsed = now - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-          setVal(Math.floor(eased * to));
-          if (progress < 1) requestAnimationFrame(animate);
+        const t0 = performance.now();
+        const tick = (now) => {
+          const p = Math.min((now - t0) / duration, 1);
+          const e = 1 - Math.pow(2, -10 * p);
+          setVal(Math.floor(e * to));
+          if (p < 1) requestAnimationFrame(tick);
           else setVal(to);
         };
-        requestAnimationFrame(animate);
+        requestAnimationFrame(tick);
       }
     }, { threshold: 0.5 });
     if (ref.current) obs.observe(ref.current);
@@ -144,28 +102,12 @@ const Counter = ({ to, suffix = "", duration = 2000 }) => {
   return <span ref={ref}>{val}{suffix}</span>;
 };
 
-// ── Reveal Wrapper ───────────────────────────────────────────────────────────
-const Reveal = ({ children, delay = 0, className = "" }) => {
-  const ref = useRef(null);
-  const [vis, setVis] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVis(true); obs.disconnect(); } }, { threshold: 0.1 });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-  return (
-    <div ref={ref} className={`reveal ${vis ? "reveal-visible" : ""} ${className}`} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  );
-};
-
-// ── Navbar ───────────────────────────────────────────────────────────────────
-const Navbar = ({ dark, toggleDark }) => {
+// ── Navbar ────────────────────────────────────────────────────────────────────
+const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 30);
+    const fn = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
@@ -173,334 +115,182 @@ const Navbar = ({ dark, toggleDark }) => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
-
-  const scroll = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setOpen(false); };
-  // Removed "niches" from nav links
-  const links = ["home", "about", "services", "work", "faq", "contact"];
-
+  const go = (id) => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setOpen(false); };
+  const links = [
+    { id: "services", label: "Services" },
+    { id: "pricing", label: "Pricing" },
+    { id: "portfolio", label: "Portfolio" },
+    { id: "testimonials", label: "Testimonials" },
+    { id: "contact", label: "Contact" },
+  ];
   return (
-    <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
+    <nav className={`navbar${scrolled ? " nav-scrolled" : ""}`}>
       <div className="nav-inner">
-        <button className="nav-logo" onClick={() => scroll("home")}>
-          <svg viewBox="0 0 40 40" width="32" height="32">
-            <defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#3B82F6"/><stop offset="100%" stopColor="#8B5CF6"/></linearGradient></defs>
-            <polygon points="20,3 37,13 37,27 20,37 3,27 3,13" fill="url(#ng)" opacity="0.9"/>
-            <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="11" fontWeight="800" fontFamily="sans-serif">GX</text>
-          </svg>
-          <span>GrowHexa</span>
+        <button className="nav-logo" onClick={() => go("hero")}>
+          <div className="logo-icon">
+            <svg viewBox="0 0 32 32" width="28" height="28">
+              <defs><linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#2563EB"/><stop offset="100%" stopColor="#7C3AED"/></linearGradient></defs>
+              <polygon points="16,2 30,9 30,23 16,30 2,23 2,9" fill="url(#lg1)"/>
+              <text x="50%" y="56%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="10" fontWeight="800" fontFamily="Inter,sans-serif">GH</text>
+            </svg>
+          </div>
+          <span className="logo-text">GrowHexa</span>
         </button>
 
-        <div className="nav-links-desktop">
-          {links.map(l => <button key={l} className="nav-link" onClick={() => scroll(l)}>{l.charAt(0).toUpperCase()+l.slice(1)}</button>)}
-          <button className="nav-cta" onClick={() => scroll("contact")}>Start Project</button>
+        <div className="nav-links">
+          {links.map(l => (
+            <button key={l.id} className="nav-link" onClick={() => go(l.id)}>{l.label}</button>
+          ))}
         </div>
 
-        <div className="nav-actions">
-          <button className="theme-toggle" onClick={toggleDark} aria-label="Toggle theme">
-            <Icon name={dark ? "sun" : "moon"} size={18} />
-          </button>
-          <button
-            className={`hamburger ${open ? "hamburger-open" : ""}`}
-            onClick={() => setOpen(o => !o)}
-            aria-label={open ? "Close menu" : "Open menu"}
-          >
-            <span className="ham-icon ham-menu"><Icon name="menu" size={22} /></span>
-            <span className="ham-icon ham-close"><Icon name="x" size={22} /></span>
+        <div className="nav-end">
+          <button className="nav-cta" onClick={() => go("contact")}>Get Started</button>
+          <button className={`ham${open ? " ham-open" : ""}`} onClick={() => setOpen(o => !o)} aria-label="Menu">
+            <span /><span /><span />
           </button>
         </div>
       </div>
 
-      {/* Mobile overlay menu */}
-      <div className={`mobile-menu ${open ? "mobile-menu-open" : ""}`}>
-        <div className="mobile-menu-inner">
-          {links.map((l, i) => (
-            <button
-              key={l}
-              className="mobile-link"
-              onClick={() => scroll(l)}
-              style={{ animationDelay: open ? `${i * 60}ms` : "0ms" }}
-            >
-              {l.charAt(0).toUpperCase()+l.slice(1)}
-            </button>
-          ))}
-          <button className="mobile-cta" onClick={() => scroll("contact")}>
-            Start Project <Icon name="arrowRight" size={18} />
+      <div className={`mob-menu${open ? " mob-open" : ""}`}>
+        {links.map((l, i) => (
+          <button key={l.id} className="mob-link" onClick={() => go(l.id)}
+            style={{ animationDelay: open ? `${i * 55}ms` : "0ms" }}>
+            {l.label}
           </button>
-          <div className="mobile-social">
-            {["instagram","twitter","linkedin"].map(s => (
-              <a key={s} href="#" className="social-link" aria-label={s}><Icon name={s} size={18}/></a>
-            ))}
-          </div>
-        </div>
+        ))}
+        <button className="mob-cta" onClick={() => go("contact")}>Get Started →</button>
       </div>
     </nav>
   );
 };
 
-// ── Hero ─────────────────────────────────────────────────────────────────────
+// ── Hero ──────────────────────────────────────────────────────────────────────
 const Hero = () => {
-  const scroll = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-  const stats = [
-    { to: 10,  suffix: "+", label: "Business Websites" },
-    { to: 50,  suffix: "+", label: "Projects Completed" },
-    { to: 100, suffix: "%", label: "Client Satisfaction" },
-    { to: 2, suffix: "+", label: "Months Unlimited Revisions" },
-  ];
+  const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   return (
-    <section id="home" className="hero">
-      <div className="hero-bg">
-        <div className="blob blob-1"/><div className="blob blob-2"/><div className="blob blob-3"/>
-        <div className="hero-grid"/>
-      </div>
-      <div className="hero-inner">
-        <div className="hero-badge"><span className="badge-dot"/><span>Premium Digital Agency</span></div>
-        <h1 className="hero-headline">
-          We Build Digital Experiences<br/>
-          <span className="gradient-text">That Grow Businesses</span>
-        </h1>
-        <p className="hero-sub">Premium web development and marketing solutions that transform brands and drive measurable growth. We craft digital experiences that convert visitors into loyal customers.</p>
-        <div className="hero-btns">
-          <button className="btn-primary" onClick={() => scroll("contact")}>
-            Start Project <Icon name="arrowRight" size={18}/>
-          </button>
-          <button className="btn-secondary" onClick={() => scroll("work")}>View Work</button>
-        </div>
-        <div className="stats-grid">
-          {stats.map((s, i) => (
-            <div key={i} className="stat-card">
-              <div className="stat-num"><Counter to={s.to} suffix={s.suffix} duration={1800} /></div>
-              <div className="stat-label">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
+    <section id="hero" className="hero">
+      {/* Background orbs */}
+      <div className="hero-orb hero-orb-1" />
+      <div className="hero-orb hero-orb-2" />
+      <div className="hero-orb hero-orb-3" />
+      <div className="hero-grid-bg" />
 
-// ── Growth Graph Section ─────────────────────────────────────────────────────
-const GrowthGraph = () => {
-  const canvasRef = useRef(null);
-  const started = useRef(false);
-  const animRef = useRef(null);
-
-  const data = [
-    { month: "Jan", traffic: 20, leads: 8,  revenue: 0 },
-    { month: "Feb", traffic: 32, leads: 14, revenue: 2 },
-    { month: "Mar", traffic: 28, leads: 18, revenue: 3 },
-    { month: "Apr", traffic: 45, leads: 25, revenue: 8 },
-    { month: "May", traffic: 52, leads: 32, revenue: 8 },
-    { month: "Jun", traffic: 48, leads: 38, revenue: 10 },
-    { month: "Jul", traffic: 68, leads: 48, revenue: 11 },
-    { month: "Aug", traffic: 75, leads: 55, revenue: 11 },
-    { month: "Sep", traffic: 70, leads: 60, revenue: 13 },
-    { month: "Oct", traffic: 88, leads: 64, revenue: 15},
-    { month: "Nov", traffic: 92, leads: 66, revenue: 17 },
-    { month: "Dec", traffic: 100, leads: 67, revenue: 17 },
-  ];
-
-  const drawChart = useCallback((progress) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    const W = canvas.offsetWidth;
-    const H = canvas.offsetHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    ctx.scale(dpr, dpr);
-
-    const pad = { top: 30, right: 30, bottom: 48, left: 48 };
-    const chartW = W - pad.left - pad.right;
-    const chartH = H - pad.top - pad.bottom;
-    const pts = Math.max(1, Math.floor(data.length * progress));
-
-    ctx.clearRect(0, 0, W, H);
-
-    const gridLines = 5;
-    for (let i = 0; i <= gridLines; i++) {
-      const y = pad.top + (chartH / gridLines) * i;
-      ctx.beginPath();
-      ctx.strokeStyle = "rgba(148,163,184,0.1)";
-      ctx.lineWidth = 1;
-      ctx.setLineDash([4, 4]);
-      ctx.moveTo(pad.left, y);
-      ctx.lineTo(pad.left + chartW, y);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      const val = Math.round(100 - (100 / gridLines) * i);
-      ctx.fillStyle = "rgba(148,163,184,0.6)";
-      ctx.font = `11px DM Sans, sans-serif`;
-      ctx.textAlign = "right";
-      ctx.fillText(val + "%", pad.left - 8, y + 4);
-    }
-
-    const series = [
-      { key: "traffic", color: "#3B82F6", label: "Web Traffic" },
-      { key: "leads",   color: "#8B5CF6", label: "Leads" },
-      { key: "revenue", color: "#10B981", label: "Revenue" },
-    ];
-
-    series.forEach(({ key, color }) => {
-      const visible = data.slice(0, pts);
-      if (visible.length < 2) return;
-
-      const grad = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
-      grad.addColorStop(0, color + "33");
-      grad.addColorStop(1, color + "00");
-
-      ctx.beginPath();
-      visible.forEach((d, i) => {
-        const x = pad.left + (i / (data.length - 1)) * chartW;
-        const y = pad.top + chartH - (d[key] / 100) * chartH;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      });
-      const lastX = pad.left + ((visible.length - 1) / (data.length - 1)) * chartW;
-      ctx.lineTo(lastX, pad.top + chartH);
-      ctx.lineTo(pad.left, pad.top + chartH);
-      ctx.closePath();
-      ctx.fillStyle = grad;
-      ctx.fill();
-
-      ctx.beginPath();
-      visible.forEach((d, i) => {
-        const x = pad.left + (i / (data.length - 1)) * chartW;
-        const y = pad.top + chartH - (d[key] / 100) * chartH;
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      });
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2.5;
-      ctx.lineJoin = "round";
-      ctx.stroke();
-
-      visible.forEach((d, i) => {
-        const x = pad.left + (i / (data.length - 1)) * chartW;
-        const y = pad.top + chartH - (d[key] / 100) * chartH;
-        ctx.beginPath();
-        ctx.arc(x, y, 4, 0, Math.PI * 2);
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.strokeStyle = "#111827";
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      });
-    });
-
-    data.forEach((d, i) => {
-      const x = pad.left + (i / (data.length - 1)) * chartW;
-      ctx.fillStyle = "rgba(148,163,184,0.7)";
-      ctx.font = `11px DM Sans, sans-serif`;
-      ctx.textAlign = "center";
-      ctx.fillText(d.month, x, pad.top + chartH + 20);
-    });
-
-    const legY = 14;
-    const legItems = [
-      { label: "Web Traffic", color: "#3B82F6" },
-      { label: "Leads",       color: "#8B5CF6" },
-      { label: "Revenue",     color: "#10B981" },
-    ];
-    let legX = pad.left;
-    legItems.forEach(({ label, color }) => {
-      ctx.beginPath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.moveTo(legX, legY);
-      ctx.lineTo(legX + 18, legY);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(legX + 9, legY, 3.5, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.fillStyle = "rgba(148,163,184,0.85)";
-      ctx.font = `12px DM Sans, sans-serif`;
-      ctx.textAlign = "left";
-      ctx.fillText(label, legX + 24, legY + 4);
-      legX += 110;
-    });
-  }, []);
-
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !started.current) {
-        started.current = true;
-        const startTime = performance.now();
-        const dur = 1800;
-        const animate = (now) => {
-          const p = Math.min((now - startTime) / dur, 1);
-          const eased = p === 1 ? 1 : 1 - Math.pow(2, -10 * p);
-          drawChart(eased);
-          if (p < 1) animRef.current = requestAnimationFrame(animate);
-        };
-        animRef.current = requestAnimationFrame(animate);
-      }
-    }, { threshold: 0.3 });
-    if (canvasRef.current) obs.observe(canvasRef.current);
-    return () => { obs.disconnect(); cancelAnimationFrame(animRef.current); };
-  }, [drawChart]);
-
-  useEffect(() => {
-    const fn = () => { if (started.current) drawChart(1); };
-    window.addEventListener("resize", fn);
-    return () => window.removeEventListener("resize", fn);
-  }, [drawChart]);
-
-  const metrics = [
-    { icon: "trendingUp", label: "Avg Traffic Growth",  value: "3.8×",  color: "#3B82F6" },
-    { icon: "users",      label: "Lead Increase",        value: "11×",   color: "#8B5CF6" },
-    { icon: "barChart",   label: "Revenue Growth",       value: "6.5×",  color: "#10B981" },
-    { icon: "award",      label: "Client ROI Avg",       value: "320%",  color: "#F59E0B" },
-  ];
-
-  return (
-    <section id="growth" className="section growth-section">
-      <div className="container">
-        <Reveal className="section-header">
-          <div className="section-label">Growth Results</div>
-          <h2 className="section-title">Real Growth, <span className="gradient-text">Real Numbers</span></h2>
-          <p className="section-sub">See how our clients grow after working with GrowHexa Digital — across traffic, leads, and revenue over 12 months.</p>
-        </Reveal>
-
-        <div className="growth-metrics">
-          {metrics.map((m, i) => (
-            <Reveal key={i} delay={i * 80}>
-              <div className="growth-metric-card" style={{ "--mc": m.color }}>
-                <div className="gm-icon" style={{ background: m.color + "22", color: m.color }}>
-                  <Icon name={m.icon} size={22}/>
-                </div>
-                <div className="gm-value" style={{ color: m.color }}>{m.value}</div>
-                <div className="gm-label">{m.label}</div>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal delay={200} className="graph-wrap">
-          <div className="graph-header">
-            <div>
-              <h3 className="graph-title">Client Performance Over 12 Months</h3>
-              <p className="graph-sub">Average growth metrics across all active client accounts</p>
-            </div>
-            <div className="graph-badge">Live Data Simulation</div>
+      <div className="container hero-inner">
+        <div className="hero-left">
+          <div className="hero-badge">
+            <span className="badge-ping" />
+            <span>Trusted by 50+ Businesses Across India</span>
           </div>
-          <canvas ref={canvasRef} className="growth-canvas" />
-        </Reveal>
 
-        <div className="growth-bars">
+          <h1 className="hero-h1">
+            Professional Websites<br />
+            <span className="grad-text">That Grow Your</span><br />
+            Business
+          </h1>
+
+          <p className="hero-sub">
+            We build modern websites, SEO systems, and digital marketing campaigns that help businesses generate more customers — consistently.
+          </p>
+
+          <div className="hero-btns">
+            <button className="btn-primary" onClick={() => go("contact")}>
+              Get Free Consultation
+              <Icon name="arrowRight" size={16} />
+            </button>
+            <button className="btn-ghost" onClick={() => go("portfolio")}>
+              View Portfolio
+            </button>
+          </div>
+
+          <div className="hero-trust">
+            <div className="trust-avatars">
+              {["S","R","A","M","V"].map((c, i) => (
+                <div key={i} className="trust-av" style={{ background: `hsl(${220 + i * 30},80%,55%)` }}>{c}</div>
+              ))}
+            </div>
+            <div className="trust-text">
+              <div className="trust-stars">{"★★★★★"}</div>
+              <span>Loved by 50+ clients</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="hero-right">
+          {/* MacBook mockup */}
+          <div className="macbook">
+            <div className="mac-screen">
+              <div className="mac-bar">
+                <span className="mac-dot" style={{ background: "#FF5F57" }} />
+                <span className="mac-dot" style={{ background: "#FEBC2E" }} />
+                <span className="mac-dot" style={{ background: "#28C840" }} />
+                <div className="mac-url">growhexa.online</div>
+              </div>
+              <div className="mac-body">
+                <div className="mac-hero-preview">
+                  <div className="mac-nav-preview">
+                    <div className="mac-logo-preview" />
+                    {[1,2,3].map(i => <div key={i} className="mac-nav-item" />)}
+                    <div className="mac-nav-btn" />
+                  </div>
+                  <div className="mac-headline-preview" />
+                  <div className="mac-sub-preview" />
+                  <div className="mac-sub-preview mac-sub-short" />
+                  <div className="mac-btns-preview">
+                    <div className="mac-btn-primary" />
+                    <div className="mac-btn-secondary" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="mac-base" />
+            <div className="mac-foot" />
+          </div>
+
+          {/* Floating stat cards */}
+          <div className="float-card float-card-1">
+            <div className="fc-icon fc-green"><Icon name="trending" size={16}/></div>
+            <div className="fc-info">
+              <span className="fc-val">+120%</span>
+              <span className="fc-label">Traffic Growth</span>
+            </div>
+          </div>
+          <div className="float-card float-card-2">
+            <div className="fc-icon fc-blue"><Icon name="search" size={16}/></div>
+            <div className="fc-info">
+              <span className="fc-val">#1</span>
+              <span className="fc-label">SEO Ranking</span>
+            </div>
+          </div>
+          <div className="float-card float-card-3">
+            <div className="fc-icon fc-purple"><Icon name="users" size={16}/></div>
+            <div className="fc-info">
+              <span className="fc-val">500+</span>
+              <span className="fc-label">Leads Generated</span>
+            </div>
+          </div>
+          <div className="float-card float-card-4">
+            <div className="fc-icon fc-amber"><Icon name="star" size={16}/></div>
+            <div className="fc-info">
+              <span className="fc-val">98%</span>
+              <span className="fc-label">Satisfaction Rate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="hero-stats-bar">
+        <div className="container hero-stats-inner">
           {[
-            { label: "Organic Search Traffic", pct: 92, color: "#3B82F6" },
-            { label: "Lead Conversion Rate",   pct: 78, color: "#8B5CF6" },
-            { label: "E-Commerce Revenue",     pct: 85, color: "#10B981" },
-            { label: "Brand Awareness",         pct: 96, color: "#F59E0B" },
-          ].map((b, i) => (
-            <Reveal key={i} delay={i * 80} className="bar-row">
-              <div className="bar-meta">
-                <span>{b.label}</span><span style={{ color: b.color }}>{b.pct}%</span>
-              </div>
-              <div className="bar-track">
-                <div className="bar-fill" style={{ "--pct": b.pct + "%", "--col": b.color }} />
-              </div>
-            </Reveal>
+            { to: 50, suffix: "+", label: "Clients Served" },
+            { to: 120, suffix: "+", label: "Projects Done" },
+            { to: 98, suffix: "%", label: "Satisfaction" },
+            { to: 5, suffix: "×", label: "Avg. Traffic Boost" },
+          ].map((s, i) => (
+            <div key={i} className="hero-stat">
+              <div className="hs-num"><Counter to={s.to} suffix={s.suffix} /></div>
+              <div className="hs-label">{s.label}</div>
+            </div>
           ))}
         </div>
       </div>
@@ -508,88 +298,37 @@ const GrowthGraph = () => {
   );
 };
 
-// ── About ────────────────────────────────────────────────────────────────────
-const About = () => {
-  const expertise = [
-    { icon: "layout",   label: "UI/UX Design",      desc: "Pixel-perfect interfaces that delight users and drive conversions." },
-    { icon: "code",     label: "Full Stack Dev",     desc: "End-to-end engineering with modern stacks and scalable architecture." },
-    { icon: "palette",  label: "Branding",           desc: "Distinctive brand identities that resonate and endure." },
-    { icon: "trending", label: "Digital Marketing",  desc: "Data-driven campaigns that amplify reach and ROI." },
-  ];
-  return (
-    <section id="about" className="section about-section">
-      <div className="container">
-        <div className="about-grid">
-          <Reveal className="about-left">
-            <div className="section-label">About Growexa</div>
-            <h2 className="section-title">We Are the Growth Partners You've Been Looking For</h2>
-            <p className="about-text">Growhexa Digital was founded with a singular vision: to help businesses thrive in the digital age. We combine cutting-edge technology with strategic thinking to deliver websites and digital solutions that don't just look great — they perform.</p>
-            <p className="about-text">From startups to established enterprises, we've partnered with ambitious teams who refuse to settle for mediocre digital presence.</p>
-            <div className="about-mission">
-              <div className="mission-card">
-                <div className="mission-icon"><Icon name="target" size={20}/></div>
-                <div><strong>Mission</strong><p>To democratize premium digital experiences for businesses of every size.</p></div>
-              </div>
-              <div className="mission-card">
-                <div className="mission-icon"><Icon name="star" size={20}/></div>
-                <div><strong>Vision</strong><p>A world where every business has a digital presence that truly reflects its potential.</p></div>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={200} className="about-right">
-            <div className="expertise-grid">
-              {expertise.map((e, i) => (
-                <div key={i} className="expertise-card">
-                  <div className="expertise-icon"><Icon name={e.icon} size={22}/></div>
-                  <div className="expertise-label">{e.label}</div>
-                  <div className="expertise-desc">{e.desc}</div>
-                </div>
-              ))}
-            </div>
-            <div className="timeline">
-              {["2022 — Founded with a vision","2023 — First 20 projects delivered","2024 — Expanded to full digital suite","2025 — 50+ satisfied clients globally"].map((t, i) => (
-                <div key={i} className="timeline-item">
-                  <div className="timeline-dot"/>
-                  <span>{t}</span>
-                </div>
-              ))}
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// ── Services ─────────────────────────────────────────────────────────────────
+// ── Services ──────────────────────────────────────────────────────────────────
 const Services = () => {
   const services = [
-    { icon: "code",     title: "Website Development",  desc: "Custom, high-performance websites built with modern frameworks and best practices." },
-    { icon: "layout",   title: "UI/UX Design",         desc: "Research-driven design that creates intuitive, beautiful user experiences." },
-    { icon: "globe",    title: "Business Websites",    desc: "Professional websites tailored to showcase your brand and generate leads." },
-    { icon: "shopping", title: "E-Commerce",           desc: "Scalable online stores with seamless checkout and powerful admin tools." },
-    { icon: "zap",      title: "Landing Pages",        desc: "High-converting landing pages optimized for your campaigns and goals." },
-    { icon: "search",   title: "SEO Optimization",     desc: "Dominate search rankings with technical SEO and content strategies." },
-    { icon: "palette",  title: "Branding Design",      desc: "Complete brand identity systems — logo, colors, typography, and guidelines." },
-    { icon: "trending", title: "Digital Marketing",    desc: "Multi-channel marketing campaigns that drive measurable business growth." },
+    { icon: "code",       title: "Website Development",       desc: "Custom, blazing-fast websites built with React & Next.js that convert visitors into customers.",  color: "#2563EB", bg: "rgba(37,99,235,0.08)" },
+    { icon: "trending",   title: "Digital Marketing",         desc: "Data-driven multi-channel campaigns that amplify your reach and bring measurable ROI.",              color: "#7C3AED", bg: "rgba(124,58,237,0.08)" },
+    { icon: "search",     title: "SEO Optimization",          desc: "Dominate search rankings with technical SEO, content strategy, and link building.",                  color: "#06B6D4", bg: "rgba(6,182,212,0.08)" },
+    { icon: "palette",    title: "Branding & Identity",       desc: "Distinctive brand systems — logo, colors, typography — that make your business unforgettable.",      color: "#F59E0B", bg: "rgba(245,158,11,0.08)" },
+    { icon: "share",      title: "Social Media Management",   desc: "Consistent, engaging content across Instagram, LinkedIn, and X that builds real community.",        color: "#EC4899", bg: "rgba(236,72,153,0.08)" },
+    { icon: "zap",        title: "Landing Pages",             desc: "High-converting landing pages that are A/B tested and built specifically for your campaigns.",       color: "#10B981", bg: "rgba(16,185,129,0.08)" },
   ];
   return (
-    <section id="services" className="section services-section">
+    <section id="services" className="section section-alt">
       <div className="container">
-        <Reveal className="section-header">
-          <div className="section-label">What We Do</div>
-          <h2 className="section-title">Services Crafted for <span className="gradient-text">Growth</span></h2>
-          <p className="section-sub">From concept to launch and beyond — the complete digital toolkit your business needs to thrive.</p>
+        <Reveal className="sec-header">
+          <div className="sec-pill">What We Do</div>
+          <h2 className="sec-title">Services Built for <span className="grad-text">Real Growth</span></h2>
+          <p className="sec-sub">From your first website to a full digital ecosystem — everything your business needs to win online.</p>
         </Reveal>
+
         <div className="services-grid">
           {services.map((s, i) => (
             <Reveal key={i} delay={i * 60}>
-              <div className="service-card">
-                <div className="service-glow"/>
-                <div className="service-icon"><Icon name={s.icon} size={26}/></div>
-                <h3 className="service-title">{s.title}</h3>
-                <p className="service-desc">{s.desc}</p>
-                <div className="service-arrow"><Icon name="arrowRight" size={16}/></div>
+              <div className="svc-card" style={{ "--svc-color": s.color, "--svc-bg": s.bg }}>
+                <div className="svc-icon-wrap">
+                  <Icon name={s.icon} size={22} />
+                </div>
+                <h3 className="svc-title">{s.title}</h3>
+                <p className="svc-desc">{s.desc}</p>
+                <div className="svc-arrow">
+                  Learn more <Icon name="arrowRight" size={14} />
+                </div>
               </div>
             </Reveal>
           ))}
@@ -599,116 +338,218 @@ const Services = () => {
   );
 };
 
-// ── Work / Portfolio ──────────────────────────────────────────────────────────
-const Work = () => {
-  const [filter, setFilter] = useState("All");
-  const cats = ["All","Web Dev","Branding","E-Commerce","Marketing"];
-
-  // Each project has: title, cat, tag, color, image (Unsplash), link
-  const projects = [
-    {
-      title: "MM Tigers Sports Academy",
-      cat: "Web Dev",
-      tag: "Sports Academy Website",
-      color: "#8B5CF6",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303807/Screenshot_2026-05-05_173129_r2xmzj.png",
-      link: "https://www.mmtigerssportsacademy.com/",
-    },
-     {
-      title: "V-Karathe Academy",
-      cat: "branding",
-      tag: "Academy Website",
-      color: "#EF4444",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779597847/Screenshot_2026-05-24_101258_kabvjf.png",
-      link: "https://v-karathe-academy.vercel.app",
-    },
-    {
-      title: "BK-Fit Studio",
-      cat: "Web Dev",
-      tag: "Fitness Studio Website",
-      color: "#10B981",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779266611/Screenshot_2026-05-19_081023_rxmurd.png",
-      link: "https://vfitstudio.vercel.app",
-    },
-    {
-      title: "GenCart Blog",
-      cat: "E-Commerce",
-      tag: "Tech Blog & Store",
-      color: "#F59E0B",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779012398/Screenshot_2026-05-17_153253_lyqb5y.png",
-      link: "https://gencart.vercel.app",
-    },
-   
-    {
-      title: "Precision Sports Center Website",
-      cat: "Marketing",
-      tag: "Campaign Strategy",
-      color: "#06B6D4",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png",
-      link: "https://precision-sports-center.vercel.app",
-    },
-    {
-      title: "Disaster management Authority Portal",
-      cat: "Web Dev",
-      tag: "Disaster Management Website",
-      color: "#8B5CF6",
-      image: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303817/Screenshot_2026-05-05_174026_ykuzxs.png",
-      link: "https://dms-wine-gamma.vercel.app/",
-    },
-   
+// ── Why Us ────────────────────────────────────────────────────────────────────
+const WhyUs = () => {
+  const reasons = [
+    { icon: "award",      title: "Affordable Pricing",      desc: "World-class quality without the agency price tag. Transparent, no-surprise billing." },
+    { icon: "clock",      title: "Fast Delivery",           desc: "Most websites delivered in 5–10 days. We move at startup speed without cutting corners." },
+    { icon: "search",     title: "SEO Optimised",           desc: "Every website ships with structured data, Core Web Vitals, and semantic HTML baked in." },
+    { icon: "smartphone", title: "Mobile-First Design",     desc: "60%+ of traffic is mobile. Your site performs beautifully on every screen size." },
+    { icon: "shield",     title: "Dedicated Support",       desc: "Direct access to your project team. No tickets, no bots — real humans who care." },
+    { icon: "target",     title: "Growth-Focused",          desc: "We measure success in revenue, leads, and rankings — not pretty screenshots." },
   ];
-
-  const filtered = filter === "All" ? projects : projects.filter(p => p.cat === filter);
-
   return (
-    <section id="work" className="section work-section">
+    <section id="why" className="section">
       <div className="container">
-        <Reveal className="section-header">
-          <div className="section-label">Portfolio</div>
-          <h2 className="section-title">Work We're <span className="gradient-text">Proud Of</span></h2>
-          <p className="section-sub">A curated selection of projects that showcase our craft, creativity, and commitment to excellence.</p>
+        <Reveal className="sec-header">
+          <div className="sec-pill">Why GrowHexa</div>
+          <h2 className="sec-title">The Unfair Advantage <span className="grad-text">for Your Business</span></h2>
+          <p className="sec-sub">We combine the design of a global agency with the hustle of a startup — delivering premium results at fair prices.</p>
         </Reveal>
 
-        <div className="filter-bar">
-          {cats.map(c => (
-            <button key={c} className={`filter-btn ${filter===c?"filter-active":""}`} onClick={() => setFilter(c)}>{c}</button>
+        <div className="why-grid">
+          {reasons.map((r, i) => (
+            <Reveal key={i} delay={i * 55}>
+              <div className="why-card">
+                <div className="why-icon-wrap">
+                  <Icon name={r.icon} size={20} />
+                </div>
+                <h3 className="why-title">{r.title}</h3>
+                <p className="why-desc">{r.desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ── Pricing ───────────────────────────────────────────────────────────────────
+const Pricing = () => {
+  const [tab, setTab] = useState("website");
+  const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+
+  const websitePlans = [
+    {
+      name: "Starter",
+      price: "2,999",
+      tag: "Perfect for small businesses",
+      features: ["5 Pages", "Mobile Responsive", "Contact Form", "Basic SEO Setup", "1 Month Support", "Google Analytics"],
+      cta: "Get Started",
+      popular: false,
+    },
+    {
+      name: "Premium",
+      price: "7,999",
+      tag: "Most Popular — Best Value",
+      features: ["Up to 12 Pages", "Premium Custom Design", "Advanced SEO", "Speed Optimisation", "Lead Capture Setup", "Conversion-Focused Design", "3 Months Support", "CMS Integration"],
+      cta: "Start Growing",
+      popular: true,
+    },
+    {
+      name: "E-Commerce",
+      price: "12,999",
+      tag: "Full online store solution",
+      features: ["Unlimited Products", "Payment Gateway", "Order Management", "Mobile Responsive", "SEO Setup", "Inventory Management", "6 Months Support", "Analytics Dashboard"],
+      cta: "Build My Store",
+      popular: false,
+    },
+  ];
+
+  const marketingPlans = [
+    {
+      name: "Starter",
+      price: "4,999",
+      suffix: "/month",
+      tag: "Get your brand online",
+      features: ["2 Social Platforms", "8 Posts / Month", "Basic Ad Management", "Monthly Report", "WhatsApp Support"],
+      cta: "Get Started",
+      popular: false,
+    },
+    {
+      name: "Growth",
+      price: "9,999",
+      suffix: "/month",
+      tag: "Most Popular — Best ROI",
+      features: ["4 Social Platforms", "20 Posts / Month", "Ad Campaign Management", "SEO Backlinks", "Email Marketing", "Bi-Weekly Reports", "Dedicated Manager"],
+      cta: "Start Growing",
+      popular: true,
+    },
+    {
+      name: "Business",
+      price: "19,999",
+      suffix: "/month",
+      tag: "Full-stack growth engine",
+      features: ["All Platforms", "Unlimited Posts", "Advanced Paid Ads", "Full SEO Suite", "Content Strategy", "Weekly Reports", "Dedicated Team", "Priority Support"],
+      cta: "Scale My Business",
+      popular: false,
+    },
+  ];
+
+  const plans = tab === "website" ? websitePlans : marketingPlans;
+
+  return (
+    <section id="pricing" className="section section-alt">
+      <div className="container">
+        <Reveal className="sec-header">
+          <div className="sec-pill">Pricing</div>
+          <h2 className="sec-title">Simple, <span className="grad-text">Transparent</span> Pricing</h2>
+          <p className="sec-sub">No hidden fees. No surprises. Just results you can measure.</p>
+        </Reveal>
+
+        <div className="pricing-tabs">
+          <button className={`ptab${tab === "website" ? " ptab-active" : ""}`} onClick={() => setTab("website")}>Website Packages</button>
+          <button className={`ptab${tab === "marketing" ? " ptab-active" : ""}`} onClick={() => setTab("marketing")}>Marketing Packages</button>
+        </div>
+
+        <div className="pricing-grid">
+          {plans.map((p, i) => (
+            <Reveal key={i} delay={i * 80}>
+              <div className={`price-card${p.popular ? " price-pop" : ""}`}>
+                {p.popular && <div className="pop-badge">★ Most Popular</div>}
+                <div className="price-header">
+                  <div className="price-name">{p.name}</div>
+                  <div className="price-tag">{p.tag}</div>
+                  <div className="price-amount">
+                    <span className="price-cur">₹</span>
+                    <span className="price-num">{p.price}</span>
+                    {p.suffix && <span className="price-suffix">{p.suffix}</span>}
+                  </div>
+                </div>
+                <div className="price-divider" />
+                <ul className="price-features">
+                  {p.features.map((f, j) => (
+                    <li key={j} className="price-feat">
+                      <span className={`pf-check${p.popular ? " pf-pop" : ""}`}><Icon name="check" size={12}/></span>
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+                <button className={`price-cta${p.popular ? " price-cta-pop" : ""}`} onClick={() => go("contact")}>
+                  {p.cta} <Icon name="arrowRight" size={15}/>
+                </button>
+                <p className="price-note">No setup fee · Cancel anytime</p>
+              </div>
+            </Reveal>
           ))}
         </div>
 
-        <div className="work-grid">
-          {filtered.map((p, i) => (
+        <Reveal>
+          <div className="pricing-custom">
+            <div className="pc-left">
+              <div className="pc-icon"><Icon name="zap" size={24}/></div>
+              <div>
+                <strong>Need a custom solution?</strong>
+                <p>Enterprise projects, custom integrations, or white-label partnerships — let's talk scope.</p>
+              </div>
+            </div>
+            <button className="btn-ghost" onClick={() => go("contact")}>Discuss Custom Plan →</button>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+};
+
+// ── Portfolio ─────────────────────────────────────────────────────────────────
+const Portfolio = () => {
+  const [filter, setFilter] = useState("All");
+  const cats = ["All", "Web Dev", "E-Commerce", "Marketing"];
+
+  const projects = [
+    { title: "MM Tigers Sports Academy", cat: "Web Dev", stat: "+340% Traffic", tag: "Sports Academy",  color: "#2563EB", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303807/Screenshot_2026-05-05_173129_r2xmzj.png", link: "https://www.mmtigerssportsacademy.com/" },
+    { title: "V-Karathe Academy",         cat: "Web Dev", stat: "+220% Leads",   tag: "Academy Website", color: "#7C3AED", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779597847/Screenshot_2026-05-24_101258_kabvjf.png", link: "https://v-karathe-academy.vercel.app" },
+    { title: "BK-Fit Studio",             cat: "Web Dev", stat: "+180% Bookings",tag: "Fitness Studio",  color: "#10B981", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779266611/Screenshot_2026-05-19_081023_rxmurd.png", link: "https://vfitstudio.vercel.app" },
+    { title: "GenCart Blog & Store",       cat: "E-Commerce", stat: "₹2L+ Revenue", tag: "Tech E-Commerce",color: "#F59E0B", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779012398/Screenshot_2026-05-17_153253_lyqb5y.png", link: "https://gencart.vercel.app" },
+    { title: "Precision Sports Center",   cat: "Marketing",  stat: "+500 Leads",  tag: "Sports Centre",  color: "#06B6D4", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png", link: "https://precision-sports-center.vercel.app" },
+    { title: "Disaster Mgmt Authority",   cat: "Web Dev", stat: "10K+ Users",     tag: "Govt. Portal",   color: "#EC4899", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303817/Screenshot_2026-05-05_174026_ykuzxs.png", link: "https://dms-wine-gamma.vercel.app/" },
+  ];
+
+  const shown = filter === "All" ? projects : projects.filter(p => p.cat === filter);
+
+  return (
+    <section id="portfolio" className="section">
+      <div className="container">
+        <Reveal className="sec-header">
+          <div className="sec-pill">Portfolio</div>
+          <h2 className="sec-title">Work We're <span className="grad-text">Proud Of</span></h2>
+          <p className="sec-sub">Real projects. Real results. Every website built to convert.</p>
+        </Reveal>
+
+        <div className="port-filters">
+          {cats.map(c => (
+            <button key={c} className={`port-filter${filter === c ? " pf-active" : ""}`} onClick={() => setFilter(c)}>{c}</button>
+          ))}
+        </div>
+
+        <div className="port-grid">
+          {shown.map((p, i) => (
             <Reveal key={p.title} delay={i * 60}>
-              {/* Entire card is a link */}
-              <a
-                href={p.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="work-card"
-                data-hover
-                style={{ display: "block", textDecoration: "none", color: "inherit" }}
-              >
-                <div className="work-thumb" style={{ "--accent": p.color }}>
-                  {/* Real project image */}
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="work-thumb-img"
-                    loading="lazy"
-                  />
-                  {/* Hover overlay with link icon */}
-                  <div className="work-overlay">
-                    <Icon name="externalLink" size={32}/>
-                    <span className="work-overlay-label">View Project</span>
+              <a href={p.link} target="_blank" rel="noopener noreferrer" className="port-card">
+                <div className="port-thumb">
+                  <img src={p.img} alt={p.title} className="port-img" loading="lazy" />
+                  <div className="port-overlay">
+                    <Icon name="externalLink" size={28} />
+                    <span>View Live Site</span>
                   </div>
                 </div>
-                <div className="work-info">
-                  <span className="work-tag">{p.tag}</span>
-                  <h3 className="work-title">
-                    {p.title}
-                    <span style={{ display:"inline-flex", marginLeft:6, verticalAlign:"middle", opacity:0.4, transition:"opacity .2s" }}>
-                      <Icon name="externalLink" size={14}/>
-                    </span>
-                  </h3>
+                <div className="port-info">
+                  <span className="port-tag" style={{ color: p.color }}>{p.tag}</span>
+                  <h3 className="port-title">{p.title}</h3>
+                  <div className="port-stat" style={{ color: p.color, background: `${p.color}12` }}>
+                    <Icon name="trending" size={13}/> {p.stat}
+                  </div>
                 </div>
               </a>
             </Reveal>
@@ -719,35 +560,43 @@ const Work = () => {
   );
 };
 
-// ── FAQ ───────────────────────────────────────────────────────────────────────
-const FAQ = () => {
-  const [open, setOpen] = useState(null);
-  const faqs = [
-    { q: "How long does a typical website project take?", a: "Most projects are completed in 2–6 weeks depending on scope. We'll give you a detailed timeline during our initial consultation, and we stick to it." },
-    { q: "What's included in your Website Development service?", a: "Everything: design, development, responsive optimization, basic SEO setup, performance tuning, and 30 days of post-launch support. No hidden fees." },
-    { q: "Do you offer unlimited revisions?", a: "Yes — during the active development phase, we iterate until you're completely satisfied. We believe in getting it right, not just getting it done." },
-    { q: "Can you work with my existing brand guidelines?", a: "Absolutely. We're experienced at working within established brand systems while elevating the digital experience to match your ambition." },
-    { q: "What technologies do you specialize in?", a: "React, Next.js, Node.js, Tailwind CSS, Webflow, Shopify, and more. We pick the right tool for each project — not the trendiest one." },
-    { q: "Do you offer ongoing maintenance and support?", a: "Yes. We offer flexible monthly retainer plans for maintenance, updates, hosting management, and ongoing digital marketing support." },
-    { q: "How do we get started?", a: "Simple — hit 'Start Project', fill out a brief, and we'll schedule a free 30-minute discovery call within 24 hours." },
+// ── Testimonials ──────────────────────────────────────────────────────────────
+const Testimonials = () => {
+  const reviews = [
+    { name: "Rajesh Kumar",   role: "Director, MM Tigers Academy", rating: 5, text: "GrowHexa completely transformed our online presence. Leads increased by 340% within 3 months. The team is responsive, talented, and truly cares about results.", avatar: "R", color: "#2563EB" },
+    { name: "Priya Sharma",   role: "Owner, BK-Fit Studio",        rating: 5, text: "We went from zero online presence to booking out classes every week. The website is stunning and the SEO work they did is incredible. Highly recommend.", avatar: "P", color: "#7C3AED" },
+    { name: "Arjun Nair",     role: "Founder, GenCart",            rating: 5, text: "The e-commerce site they built for us is fast, beautiful, and converts really well. Revenue exceeded our targets in the first month. Best investment we made.", avatar: "A", color: "#06B6D4" },
+    { name: "Meena Venkatesh",role: "Principal, V-Karathe Academy",rating: 5, text: "Professional from start to finish. The team understood exactly what we needed and delivered ahead of schedule. Our students find the site easy to use.", avatar: "M", color: "#10B981" },
+    { name: "Vikram Singh",   role: "MD, Precision Sports",        rating: 5, text: "They handled everything — design, development, SEO, and marketing. Our walk-ins increased significantly and the ROI has been fantastic.", avatar: "V", color: "#F59E0B" },
+    { name: "Divya Krishnan", role: "Entrepreneur, Chennai",       rating: 5, text: "Working with GrowHexa felt like having an in-house team. Fast responses, quality work, and real results. Already recommended them to 5 friends.", avatar: "D", color: "#EC4899" },
   ];
+
   return (
-    <section id="faq" className="section faq-section">
-      <div className="container faq-container">
-        <Reveal className="section-header">
-          <div className="section-label">FAQ</div>
-          <h2 className="section-title">Questions <span className="gradient-text">Answered</span></h2>
-          <p className="section-sub">Everything you need to know before we start building together.</p>
+    <section id="testimonials" className="section section-alt">
+      <div className="container">
+        <Reveal className="sec-header">
+          <div className="sec-pill">Testimonials</div>
+          <h2 className="sec-title">Clients Love <span className="grad-text">What We Build</span></h2>
+          <p className="sec-sub">Don't take our word for it — hear directly from businesses we've helped grow.</p>
         </Reveal>
-        <div className="faq-list">
-          {faqs.map((f, i) => (
-            <Reveal key={i} delay={i * 50}>
-              <div className={`faq-item ${open===i?"faq-open":""}`}>
-                <button className="faq-q" onClick={() => setOpen(open===i?null:i)}>
-                  <span>{f.q}</span>
-                  <span className="faq-icon"><Icon name={open===i?"minus":"plus"} size={18}/></span>
-                </button>
-                <div className="faq-a"><p>{f.a}</p></div>
+
+        <div className="testi-grid">
+          {reviews.map((r, i) => (
+            <Reveal key={i} delay={i * 55}>
+              <div className="testi-card">
+                <div className="testi-stars">
+                  {Array(r.rating).fill(0).map((_, k) => (
+                    <Icon key={k} name="star" size={14} className="star-icon" />
+                  ))}
+                </div>
+                <p className="testi-text">"{r.text}"</p>
+                <div className="testi-author">
+                  <div className="testi-av" style={{ background: r.color }}>{r.avatar}</div>
+                  <div>
+                    <div className="testi-name">{r.name}</div>
+                    <div className="testi-role">{r.role}</div>
+                  </div>
+                </div>
               </div>
             </Reveal>
           ))}
@@ -757,9 +606,35 @@ const FAQ = () => {
   );
 };
 
+// ── CTA Banner ────────────────────────────────────────────────────────────────
+const CTABanner = () => {
+  const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  return (
+    <section className="cta-section">
+      <div className="cta-orb cta-orb-1" />
+      <div className="cta-orb cta-orb-2" />
+      <div className="container cta-inner">
+        <Reveal>
+          <div className="cta-pill">Limited Spots Available This Month</div>
+          <h2 className="cta-h2">Ready to Grow Your<br /><span>Business Online?</span></h2>
+          <p className="cta-sub">Book a free 30-minute strategy call. We'll analyse your current digital presence and hand you a personalised growth roadmap — no strings attached.</p>
+          <div className="cta-btns">
+            <button className="cta-btn-primary" onClick={() => go("contact")}>
+              Book A Free Strategy Call <Icon name="arrowRight" size={16}/>
+            </button>
+            <div className="cta-trust">
+              <Icon name="shield" size={16}/> No commitment · 100% Free
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+};
+
 // ── Contact ───────────────────────────────────────────────────────────────────
 const Contact = () => {
-  const [form, setForm] = useState({ name:"", email:"", company:"", message:"" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", service: "", message: "" });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const submit = (e) => {
@@ -768,71 +643,104 @@ const Contact = () => {
     setTimeout(() => { setSending(false); setSent(true); }, 1800);
   };
   return (
-    <section id="contact" className="section contact-section">
+    <section id="contact" className="section">
       <div className="container">
-        <Reveal className="section-header">
-          <div className="section-label">Let's Talk</div>
-          <h2 className="section-title">Start Your <span className="gradient-text">Growth Journey</span></h2>
-          <p className="section-sub">Tell us about your project and we'll get back to you within 24 hours.</p>
+        <Reveal className="sec-header">
+          <div className="sec-pill">Contact</div>
+          <h2 className="sec-title">Start Your <span className="grad-text">Growth Journey</span></h2>
+          <p className="sec-sub">Fill in the form and we'll get back to you within a few hours.</p>
         </Reveal>
-        <div className="contact-grid">
-          <Reveal className="contact-info">
-            <h3 className="contact-info-title">Get in Touch</h3>
-            <div className="contact-item">
-              <div className="contact-icon"><Icon name="mail" size={20}/></div>
-              <div><strong>Email</strong><p>studiogrowix@gmail.com
-</p></div>
+
+        <div className="contact-wrap">
+          <Reveal className="contact-left">
+            <h3 className="cl-title">Let's Talk Business</h3>
+            <p className="cl-sub">We work with businesses of all sizes — from solo founders to large enterprises. Every project starts with a conversation.</p>
+
+            <div className="cl-items">
+              <a href="mailto:studiogrowix@gmail.com" className="cl-item">
+                <div className="cl-icon"><Icon name="mail" size={18}/></div>
+                <div>
+                  <div className="cl-label">Email</div>
+                  <div className="cl-val">studiogrowix@gmail.com</div>
+                </div>
+              </a>
+              <a href="tel:+918778238701" className="cl-item">
+                <div className="cl-icon"><Icon name="phone" size={18}/></div>
+                <div>
+                  <div className="cl-label">Phone / WhatsApp</div>
+                  <div className="cl-val">+91 87782 38701</div>
+                </div>
+              </a>
+              <div className="cl-item">
+                <div className="cl-icon"><Icon name="globe" size={18}/></div>
+                <div>
+                  <div className="cl-label">Website</div>
+                  <div className="cl-val">www.growhexa.online</div>
+                </div>
+              </div>
+              <div className="cl-item">
+                <div className="cl-icon"><Icon name="target" size={18}/></div>
+                <div>
+                  <div className="cl-label">Headquarters</div>
+                  <div className="cl-val">Chennai, Tamil Nadu, India</div>
+                </div>
+              </div>
             </div>
-            <div className="contact-item">
-              <div className="contact-icon"><Icon name="phone" size={20}/></div>
-              <div><strong>Phone</strong><p>+91 8778238701</p></div>
-            </div>
-            <div className="contact-item">
-              <div className="contact-icon"><Icon name="globe" size={20}/></div>
-              <div><strong>HQ</strong><p>Chennai, Tamil Nadu, India</p></div>
-            </div>
-            <div className="social-links">
+
+            <div className="cl-social">
               {["instagram","twitter","linkedin"].map(s => (
-                <a key={s} href={`https://www.${s}.com/growhexa_digital`} className="social-link" aria-label={s}><Icon name={s} size={18}/></a>
+                <a key={s} href="#" className="cl-soc-link" aria-label={s}><Icon name={s} size={17}/></a>
               ))}
             </div>
-            <div className="contact-banner">
-              <div className="contact-banner-icon"><Icon name="zap" size={28}/></div>
-              <div>
-                <strong>Free Strategy Call</strong>
-                <p>Book a free 30-min consultation and get a custom growth plan for your business — no strings attached.</p>
-              </div>
-            </div>
           </Reveal>
-          <Reveal delay={200} className="contact-form-wrap">
+
+          <Reveal delay={120} className="contact-form-card">
             {sent ? (
               <div className="form-success">
-                <div className="success-icon"><Icon name="check" size={40}/></div>
-                <h3>Message Sent!</h3>
-                <p>We'll get back to you within 24 hours. Let's build something great together.</p>
+                <div className="fs-icon"><Icon name="check" size={32}/></div>
+                <h3>Message Received!</h3>
+                <p>We'll reach out within a few hours. Looking forward to working with you.</p>
               </div>
             ) : (
-              <form className="contact-form" onSubmit={submit}>
-                <div className="form-row">
-                  <div className="form-group">
+              <form className="cf" onSubmit={submit}>
+                <div className="cf-row">
+                  <div className="cf-group">
                     <label>Full Name</label>
-                    <input type="text" placeholder="John Doe" value={form.name} onChange={e => setForm({...form,name:e.target.value})} required/>
+                    <input type="text" placeholder="Rajesh Kumar" value={form.name}
+                      onChange={e => setForm({ ...form, name: e.target.value })} required />
                   </div>
-                  <div className="form-group">
+                  <div className="cf-group">
                     <label>Email Address</label>
-                    <input type="email" placeholder="john@company.com" value={form.email} onChange={e => setForm({...form,email:e.target.value})} required/>
+                    <input type="email" placeholder="rajesh@company.com" value={form.email}
+                      onChange={e => setForm({ ...form, email: e.target.value })} required />
                   </div>
                 </div>
-                <div className="form-group">
-                  <label>Company (optional)</label>
-                  <input type="text" placeholder="Your Company" value={form.company} onChange={e => setForm({...form,company:e.target.value})}/>
+                <div className="cf-row">
+                  <div className="cf-group">
+                    <label>Phone Number</label>
+                    <input type="tel" placeholder="+91 98765 43210" value={form.phone}
+                      onChange={e => setForm({ ...form, phone: e.target.value })} />
+                  </div>
+                  <div className="cf-group">
+                    <label>Service Interested In</label>
+                    <select value={form.service} onChange={e => setForm({ ...form, service: e.target.value })}>
+                      <option value="">Select a service</option>
+                      <option>Website Development</option>
+                      <option>Digital Marketing</option>
+                      <option>SEO Optimization</option>
+                      <option>Branding</option>
+                      <option>Social Media</option>
+                      <option>Complete Package</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="form-group">
+                <div className="cf-group">
                   <label>Tell us about your project</label>
-                  <textarea rows="5" placeholder="We need a premium website for our startup..." value={form.message} onChange={e => setForm({...form,message:e.target.value})} required/>
+                  <textarea rows="4" placeholder="We need a premium website for our business..."
+                    value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required />
                 </div>
-                <button type="submit" className={`form-submit ${sending?"form-sending":""}`}>
-                  {sending ? <span className="spinner"/> : <><span>Send Message</span><Icon name="send" size={18}/></>}
+                <button type="submit" className={`cf-submit${sending ? " cf-sending" : ""}`}>
+                  {sending ? <span className="cf-spinner" /> : <><span>Send Message</span><Icon name="send" size={16}/></>}
                 </button>
               </form>
             )}
@@ -843,51 +751,99 @@ const Contact = () => {
   );
 };
 
+// ── FAQ ───────────────────────────────────────────────────────────────────────
+const FAQ = () => {
+  const [open, setOpen] = useState(null);
+  const faqs = [
+    { q: "How long does a website take to build?", a: "Most websites are delivered in 5–14 days. The timeline depends on scope and how quickly you provide content. We'll agree on a specific deadline before we start." },
+    { q: "Do you offer unlimited revisions?", a: "Yes — during the development phase you get unlimited revisions until you're 100% happy. We believe in getting it right, not just getting it done." },
+    { q: "Is SEO included in every website?", a: "Yes. Every website includes on-page SEO, meta tags, structured data, sitemap, robots.txt, and Google Analytics setup at no extra charge." },
+    { q: "What happens after the website is launched?", a: "You get 30–180 days of free support depending on your package. After that, flexible monthly retainer plans are available for ongoing updates and marketing." },
+    { q: "Do you work with clients outside Chennai?", a: "Absolutely — we work with clients all over India and internationally. All project communication happens over email, WhatsApp, and video calls." },
+    { q: "Can you help with my existing website?", a: "Yes. We do redesigns, speed optimisations, SEO audits, and migration to modern stacks for existing websites. Reach out with what you need." },
+  ];
+  return (
+    <section id="faq" className="section section-alt">
+      <div className="container faq-wrap">
+        <Reveal className="sec-header">
+          <div className="sec-pill">FAQ</div>
+          <h2 className="sec-title">Questions <span className="grad-text">Answered</span></h2>
+          <p className="sec-sub">Everything you need to know before we start building.</p>
+        </Reveal>
+        <div className="faq-list">
+          {faqs.map((f, i) => (
+            <Reveal key={i} delay={i * 40}>
+              <div className={`faq-item${open === i ? " faq-open" : ""}`}>
+                <button className="faq-q" onClick={() => setOpen(open === i ? null : i)}>
+                  <span>{f.q}</span>
+                  <span className="faq-ico"><Icon name={open === i ? "minus" : "plus"} size={16}/></span>
+                </button>
+                <div className="faq-ans"><p>{f.a}</p></div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 // ── Footer ────────────────────────────────────────────────────────────────────
 const Footer = () => {
+  const go = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const scroll = (id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  const [sub, setSub] = useState(false);
   return (
     <footer className="footer">
       <div className="footer-top">
-        <div className="footer-brand">
-          <div className="footer-logo">
-            <svg viewBox="0 0 40 40" width="36" height="36">
-              <defs><linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#3B82F6"/><stop offset="100%" stopColor="#8B5CF6"/></linearGradient></defs>
-              <polygon points="20,3 37,13 37,27 20,37 3,27 3,13" fill="url(#fg)" opacity="0.9"/>
-              <text x="50%" y="55%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="11" fontWeight="800" fontFamily="sans-serif">GX</text>
-            </svg>
-            <span>Growexa Digital</span>
-          </div>
-          <p>Premium digital experiences that grow businesses. Let's build the future together.</p>
-          <div className="social-links">
-            {["instagram","twitter","linkedin"].map(s => <a key={s} href="#" className="social-link"><Icon name={s} size={16}/></a>)}
-          </div>
-        </div>
-        <div className="footer-links-group">
-          <strong>Company</strong>
-          {/* Removed "niches" from footer links */}
-          {["about","services","work","contact"].map(l => <button key={l} onClick={() => scroll(l)}>{l.charAt(0).toUpperCase()+l.slice(1)}</button>)}
-        </div>
-        <div className="footer-links-group">
-          <strong>Services</strong>
-          {["Website Dev","UI/UX Design","E-Commerce","SEO","Branding"].map(s => <span key={s}>{s}</span>)}
-        </div>
-        <div className="footer-newsletter">
-          <strong>Newsletter</strong>
-          <p>Get digital growth tips and agency insights delivered to your inbox.</p>
-          {subscribed ? <span className="subscribed-msg">✓ You're in! Welcome aboard.</span> : (
-            <div className="newsletter-form">
-              <input type="email" placeholder="Your email" value={email} onChange={e => setEmail(e.target.value)}/>
-              <button onClick={() => email && setSubscribed(true)}>Subscribe</button>
+        <div className="container ft-inner">
+          <div className="ft-brand">
+            <div className="ft-logo">
+              <svg viewBox="0 0 32 32" width="26" height="26">
+                <defs><linearGradient id="ftg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stopColor="#2563EB"/><stop offset="100%" stopColor="#7C3AED"/></linearGradient></defs>
+                <polygon points="16,2 30,9 30,23 16,30 2,23 2,9" fill="url(#ftg)"/>
+                <text x="50%" y="56%" dominantBaseline="middle" textAnchor="middle" fill="white" fontSize="9" fontWeight="800" fontFamily="Inter,sans-serif">GH</text>
+              </svg>
+              <span>GrowHexa</span>
             </div>
-          )}
+            <p>Premium digital experiences that grow businesses. Built with care in Chennai.</p>
+            <div className="ft-social">
+              {["instagram","twitter","linkedin"].map(s => (
+                <a key={s} href="#" className="ft-soc" aria-label={s}><Icon name={s} size={16}/></a>
+              ))}
+            </div>
+          </div>
+
+          <div className="ft-col">
+            <strong>Services</strong>
+            {["Website Development","Digital Marketing","SEO Optimization","Branding","Social Media"].map(s => <span key={s}>{s}</span>)}
+          </div>
+
+          <div className="ft-col">
+            <strong>Company</strong>
+            {[["services","Services"],["pricing","Pricing"],["portfolio","Portfolio"],["contact","Contact"]].map(([id,l]) => (
+              <button key={id} onClick={() => go(id)}>{l}</button>
+            ))}
+          </div>
+
+          <div className="ft-newsletter">
+            <strong>Stay in the loop</strong>
+            <p>Weekly digital growth tips, straight to your inbox.</p>
+            {sub ? <span className="sub-done">✓ You're subscribed!</span> : (
+              <div className="ft-form">
+                <input type="email" placeholder="your@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+                <button onClick={() => email && setSub(true)}>Subscribe</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="footer-bottom">
-        <span>© 2026 GrowHexa Digital. All rights reserved.</span>
-        <span>Made with ❤ in Chennai, India</span>
+        <div className="container fb-inner">
+          <span>© 2026 GrowHexa Digital. All rights reserved.</span>
+          <a href="https://www.growhexa.online" target="_blank" rel="noopener noreferrer">www.growhexa.online</a>
+          <span>Made with ♥ in Chennai, India</span>
+        </div>
       </div>
     </footer>
   );
@@ -897,45 +853,74 @@ const Footer = () => {
 const BackToTop = () => {
   const [vis, setVis] = useState(false);
   useEffect(() => {
-    const fn = () => setVis(window.scrollY > 400);
+    const fn = () => setVis(window.scrollY > 500);
     window.addEventListener("scroll", fn);
     return () => window.removeEventListener("scroll", fn);
   }, []);
   return (
-    <button className={`back-top ${vis?"back-top-visible":""}`} onClick={() => window.scrollTo({top:0,behavior:"smooth"})} aria-label="Back to top">
-      <Icon name="arrowUp" size={20}/>
+    <button className={`btt${vis ? " btt-vis" : ""}`} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Back to top">
+      <Icon name="arrowUp" size={18}/>
     </button>
+  );
+};
+
+// ── WhatsApp Button ───────────────────────────────────────────────────────────
+const WhatsAppButton = () => {
+  const [tooltip, setTooltip] = useState(false);
+  const WA_LINK = "https://wa.me/918778238701?text=Hi%20GrowHexa%2C%20I%27d%20like%20a%20free%20consultation%20for%20my%20business%20website%20%2F%20digital%20marketing.";
+  return (
+    <a
+      href={WA_LINK}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="wa-btn"
+      aria-label="Chat on WhatsApp"
+      onMouseEnter={() => setTooltip(true)}
+      onMouseLeave={() => setTooltip(false)}
+    >
+      {tooltip && (
+        <div className="wa-tooltip">
+          <span>Free Consultation</span>
+          <span className="wa-tooltip-sub">Chat with us on WhatsApp</span>
+        </div>
+      )}
+      {/* WhatsApp SVG icon */}
+      <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
+        <path
+          fillRule="evenodd" clipRule="evenodd"
+          d="M16 2C8.268 2 2 8.268 2 16c0 2.478.664 4.8 1.824 6.8L2 30l7.4-1.8A13.93 13.93 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2Z"
+          fill="#25D366"
+        />
+        <path
+          d="M22.8 19.4c-.3-.15-1.78-.878-2.056-.978-.276-.1-.477-.15-.678.15-.2.3-.778.978-.954 1.178-.175.2-.351.225-.651.075-.3-.15-1.267-.467-2.413-1.489-.892-.795-1.494-1.776-1.67-2.076-.175-.3-.018-.462.132-.611.135-.134.3-.351.45-.526.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.678-1.633-.928-2.234-.244-.587-.493-.507-.678-.517l-.577-.01c-.2 0-.526.076-.801.376s-1.053 1.028-1.053 2.509 1.078 2.91 1.228 3.11c.15.2 2.12 3.235 5.136 4.535.718.31 1.278.496 1.714.635.72.23 1.375.197 1.893.12.577-.086 1.778-.727 2.029-1.428.25-.702.25-1.303.175-1.428-.075-.125-.275-.2-.575-.35Z"
+          fill="#fff"
+        />
+      </svg>
+      <span className="wa-pulse" />
+    </a>
   );
 };
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
-  const [loading, setLoading] = useState(true);
-  const [dark, setDark] = useState(true);
-  const handleDone = useCallback(() => setLoading(false), []);
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-  }, [dark]);
   return (
-    <>
-      {loading && <SplashScreen onDone={handleDone}/>}
-      <div className={`app ${loading?"app-hidden":"app-visible"}`}>
-        <CustomCursor/>
-        <ScrollProgress/>
-        <Navbar dark={dark} toggleDark={() => setDark(d => !d)}/>
-        <main>
-          <Hero/>
-          <About/>
-          <Services/>
-          <GrowthGraph/>
-          {/* Niches removed */}
-          <Work/>
-          <FAQ/>
-          <Contact/>
-        </main>
-        <Footer/>
-        <BackToTop/>
-      </div>
-    </>
+    <div className="app">
+      <ScrollProgress />
+      <Navbar />
+      <main>
+        <Hero />
+        <Services />
+        <WhyUs />
+        <Pricing />
+        <Portfolio />
+        <Testimonials />
+        <CTABanner />
+        <Contact />
+        <FAQ />
+      </main>
+      <Footer />
+      <BackToTop />
+      <WhatsAppButton />
+    </div>
   );
 }
