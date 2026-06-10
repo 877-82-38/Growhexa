@@ -194,7 +194,7 @@ const Hero = () => {
 
           <div className="hero-btns">
             <button className="btn-primary" onClick={() => go("contact")}>
-              Get Free Consultation
+             <a href="https://wa.me/918778238701?text=Hi%20GrowHexa,%20I%20would%20like%20to%20know%20more%20about%20your%20website%20development%20and%20digital%20marketing%20services."> Get Free Consultation</a>
               <Icon name="arrowRight" size={16} />
             </button>
             <button className="btn-ghost" onClick={() => go("portfolio")}>
@@ -508,12 +508,12 @@ const Portfolio = () => {
   const cats = ["All", "Web Dev", "E-Commerce", "Marketing"];
 
   const projects = [
-    { title: "MM Tigers Sports Academy", cat: "Web Dev", stat: "+340% Traffic", tag: "Sports Academy",  color: "#2563EB", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303807/Screenshot_2026-05-05_173129_r2xmzj.png", link: "https://www.mmtigerssportsacademy.com/" },
-    { title: "V-Karathe Academy",         cat: "Web Dev", stat: "+220% Leads",   tag: "Academy Website", color: "#7C3AED", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779597847/Screenshot_2026-05-24_101258_kabvjf.png", link: "https://v-karathe-academy.vercel.app" },
-    { title: "BK-Fit Studio",             cat: "Web Dev", stat: "+180% Bookings",tag: "Fitness Studio",  color: "#10B981", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779266611/Screenshot_2026-05-19_081023_rxmurd.png", link: "https://vfitstudio.vercel.app" },
-    { title: "GenCart Blog & Store",       cat: "E-Commerce", stat: "₹2L+ Revenue", tag: "Tech E-Commerce",color: "#F59E0B", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779012398/Screenshot_2026-05-17_153253_lyqb5y.png", link: "https://gencart.vercel.app" },
-    { title: "Precision Sports Center",   cat: "Marketing",  stat: "+500 Leads",  tag: "Sports Centre",  color: "#06B6D4", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png", link: "https://precision-sports-center.vercel.app" },
-    { title: "Disaster Mgmt Authority",   cat: "Web Dev", stat: "10K+ Users",     tag: "Govt. Portal",   color: "#EC4899", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303817/Screenshot_2026-05-05_174026_ykuzxs.png", link: "https://dms-wine-gamma.vercel.app/" },
+    { title: "MM Tigers Sports Academy", cat: "Web Dev", tag: "Sports Academy",  color: "#2563EB", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303807/Screenshot_2026-05-05_173129_r2xmzj.png", link: "https://www.mmtigerssportsacademy.com/" },
+    { title: "V-Karathe Academy",         cat: "Web Dev",   tag: "Academy Website", color: "#7C3AED", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779597847/Screenshot_2026-05-24_101258_kabvjf.png", link: "https://v-karathe-academy.vercel.app" },
+    { title: "BK-Fit Studio",             cat: "Web Dev",tag: "Fitness Studio",  color: "#10B981", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779266611/Screenshot_2026-05-19_081023_rxmurd.png", link: "https://vfitstudio.vercel.app" },
+    { title: "GenCart Blog & Store",       cat: "E-Commerce", tag: "Tech E-Commerce",color: "#F59E0B", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1779012398/Screenshot_2026-05-17_153253_lyqb5y.png", link: "https://gencart.vercel.app" },
+    { title: "Precision Sports Center",   cat: "Marketing",  tag: "Sports Centre",  color: "#06B6D4", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778304920/Screenshot_2026-05-09_110340_oahzeq.png", link: "https://precision-sports-center.vercel.app" },
+    { title: "Disaster Mgmt Authority",   cat: "Web Dev",      tag: "Govt. Portal",   color: "#EC4899", img: "https://res.cloudinary.com/dnb5k6kpt/image/upload/v1778303817/Screenshot_2026-05-05_174026_ykuzxs.png", link: "https://dms-wine-gamma.vercel.app/" },
   ];
 
   const shown = filter === "All" ? projects : projects.filter(p => p.cat === filter);
@@ -563,13 +563,13 @@ const Portfolio = () => {
 // ── Testimonials ──────────────────────────────────────────────────────────────
 const Testimonials = () => {
   const reviews = [
-    { name: "Rajesh Kumar",   role: "Director, MM Tigers Academy", rating: 5, text: "GrowHexa completely transformed our online presence. Leads increased by 340% within 3 months. The team is responsive, talented, and truly cares about results.", avatar: "R", color: "#2563EB" },
-    { name: "Priya Sharma",   role: "Owner, BK-Fit Studio",        rating: 5, text: "We went from zero online presence to booking out classes every week. The website is stunning and the SEO work they did is incredible. Highly recommend.", avatar: "P", color: "#7C3AED" },
-    { name: "Arjun Nair",     role: "Founder, GenCart",            rating: 5, text: "The e-commerce site they built for us is fast, beautiful, and converts really well. Revenue exceeded our targets in the first month. Best investment we made.", avatar: "A", color: "#06B6D4" },
-    { name: "Meena Venkatesh",role: "Principal, V-Karathe Academy",rating: 5, text: "Professional from start to finish. The team understood exactly what we needed and delivered ahead of schedule. Our students find the site easy to use.", avatar: "M", color: "#10B981" },
-    { name: "Vikram Singh",   role: "MD, Precision Sports",        rating: 5, text: "They handled everything — design, development, SEO, and marketing. Our walk-ins increased significantly and the ROI has been fantastic.", avatar: "V", color: "#F59E0B" },
-    { name: "Divya Krishnan", role: "Entrepreneur, Chennai",       rating: 5, text: "Working with GrowHexa felt like having an in-house team. Fast responses, quality work, and real results. Already recommended them to 5 friends.", avatar: "D", color: "#EC4899" },
-  ];
+    { name: "Rajesh Kumar",   rating: 5, text: "GrowHexa completely transformed our online presence. Leads increased by 340% within 3 months. The team is responsive, talented, and truly cares about results.", avatar: "R", color: "#2563EB" },
+    { name: "Priya Sharma",     rating: 4, text: "We went from zero online presence to booking out classes every week. The website is stunning and the SEO work they did is incredible. Highly recommend.", avatar: "P", color: "#7C3AED" },
+    { name: "Arjun Nair",       rating: 4, text: "The e-commerce site they built for us is fast, beautiful, and converts really well. Revenue exceeded our targets in the first month. Best investment we made.", avatar: "A", color: "#06B6D4" },
+    { name: "Meena Venkatesh",rating: 5, text: "Professional from start to finish. The team understood exactly what we needed and delivered ahead of schedule. Our students find the site easy to use.", avatar: "M", color: "#10B981" },
+    { name: "Vikram Singh",   rating: 3, text: "They handled everything — design, development, SEO, and marketing. Our walk-ins increased significantly and the ROI has been fantastic.", avatar: "V", color: "#F59E0B" },
+    { name: "Divya Krishnan", rating: 5, text: "Working with GrowHexa felt like having an in-house team. Fast responses, quality work, and real results. Already recommended them to 5 friends.", avatar: "D", color: "#EC4899" },
+  ];                              
 
   return (
     <section id="testimonials" className="section section-alt">
@@ -864,43 +864,6 @@ const BackToTop = () => {
   );
 };
 
-// ── WhatsApp Button ───────────────────────────────────────────────────────────
-const WhatsAppButton = () => {
-  const [tooltip, setTooltip] = useState(false);
-  const WA_LINK = "https://wa.me/918778238701?text=Hi%20GrowHexa%2C%20I%27d%20like%20a%20free%20consultation%20for%20my%20business%20website%20%2F%20digital%20marketing.";
-  return (
-    <a
-      href={WA_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="wa-btn"
-      aria-label="Chat on WhatsApp"
-      onMouseEnter={() => setTooltip(true)}
-      onMouseLeave={() => setTooltip(false)}
-    >
-      {tooltip && (
-        <div className="wa-tooltip">
-          <span>Free Consultation</span>
-          <span className="wa-tooltip-sub">Chat with us on WhatsApp</span>
-        </div>
-      )}
-      {/* WhatsApp SVG icon */}
-      <svg viewBox="0 0 32 32" width="28" height="28" fill="none">
-        <path
-          fillRule="evenodd" clipRule="evenodd"
-          d="M16 2C8.268 2 2 8.268 2 16c0 2.478.664 4.8 1.824 6.8L2 30l7.4-1.8A13.93 13.93 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2Z"
-          fill="#25D366"
-        />
-        <path
-          d="M22.8 19.4c-.3-.15-1.78-.878-2.056-.978-.276-.1-.477-.15-.678.15-.2.3-.778.978-.954 1.178-.175.2-.351.225-.651.075-.3-.15-1.267-.467-2.413-1.489-.892-.795-1.494-1.776-1.67-2.076-.175-.3-.018-.462.132-.611.135-.134.3-.351.45-.526.15-.175.2-.3.3-.5.1-.2.05-.376-.025-.526-.075-.15-.678-1.633-.928-2.234-.244-.587-.493-.507-.678-.517l-.577-.01c-.2 0-.526.076-.801.376s-1.053 1.028-1.053 2.509 1.078 2.91 1.228 3.11c.15.2 2.12 3.235 5.136 4.535.718.31 1.278.496 1.714.635.72.23 1.375.197 1.893.12.577-.086 1.778-.727 2.029-1.428.25-.702.25-1.303.175-1.428-.075-.125-.275-.2-.575-.35Z"
-          fill="#fff"
-        />
-      </svg>
-      <span className="wa-pulse" />
-    </a>
-  );
-};
-
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   return (
@@ -920,7 +883,6 @@ export default function App() {
       </main>
       <Footer />
       <BackToTop />
-      <WhatsAppButton />
     </div>
   );
 }
